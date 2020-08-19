@@ -1,3 +1,5 @@
+'strict-mode';
+
 // Select Elements from the DOM
 const addMovieBtn = document.getElementById('add-movie-btn');
 const searchBtn = document.getElementById('search-btn');
@@ -26,8 +28,9 @@ const renderMovies = (filter = '') => {
         }
         const { info, ...otherProps } = movie;
         //const { title: movieTitle } = info;
-        //const { getFormattedTitle } = movie; -- Not good
-        let text = movie.getFormattedTitle().toString() + ' - ';
+        let { getFormattedTitle } = movie;
+        //getFormattedTitle = getFormattedTitle.bind(movie);
+        let text = getFormattedTitle().call(movie) + ' - ';
         console.log(otherProps);
         for (const key in info) {
             if (key !== 'title') {
@@ -57,9 +60,11 @@ const addMovieHandler = () => {
     //construct a new movie
 
     const newMovie = {
-        info: { title, [extraName]: extraValue },
+        info: { 
+            title,
+             [extraName]: extraValue },
         id: Math.random().toString(),
-        getFormattedTitle: function () {
+        getFormattedTitle() {
             return this.info.title.toUpperCase();
         },
     };
@@ -69,6 +74,7 @@ const addMovieHandler = () => {
 };
 
 const searchMovieHandler = () => {
+    console.log(this);
     const filterTerm = document.getElementById('filter-title').value;
     renderMovies(filterTerm);
 };
