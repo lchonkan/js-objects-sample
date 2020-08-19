@@ -7,6 +7,22 @@ const movies = [];
 
 //Function definitions
 
+const renderMovies = () => {
+    const movieList = document.getElementById('movie-list');
+
+    movies.length === 0
+        ? movieList.classList.remove('visible')
+        : movieList.classList.add('visible');
+
+    movieList.innerHTML = '';
+
+    movies.forEach((movie) => {
+        const movieEl = document.createElement('li');
+        movieEl.textContent = movie.info.title;
+        movieList.append(movieEl);
+    });
+};
+
 const addMovieHandler = () => {
     //We want to grab the user input and the add them to the movie
     const title = document.getElementById('title').value;
@@ -30,9 +46,8 @@ const addMovieHandler = () => {
     };
 
     movies.push(newMovie);
-    console.log(newMovie);
+    renderMovies();
 };
 
 //Add event listeners to buttons
 addMovieBtn.addEventListener('click', addMovieHandler);
-
