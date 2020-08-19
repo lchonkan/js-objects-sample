@@ -1,13 +1,13 @@
 // Select Elements from the DOM
 const addMovieBtn = document.getElementById('add-movie-btn');
-const serachBtn = document.getElementById('search-btn');
+const searchBtn = document.getElementById('search-btn');
 
 //Defining global variables
 const movies = [];
 
 //Function definitions
 
-const renderMovies = () => {
+const renderMovies = (filter = '') => {
     const movieList = document.getElementById('movie-list');
 
     movies.length === 0
@@ -16,9 +16,25 @@ const renderMovies = () => {
 
     movieList.innerHTML = '';
 
-    movies.forEach((movie) => {
+    const filteredMovies = !filter
+        ? movies
+        : movies.filter((movie) => movie.info.title.includes(filter));
+
+    filteredMovies.forEach((movie) => {
         const movieEl = document.createElement('li');
-        movieEl.textContent = movie.info.title;
+        if ('info' in movie) {
+        }
+        const { info, ...otherProps } = movie;
+        //const { title: movieTitle } = info;
+        //const { getFormattedTitle } = movie; -- Not good
+        let text = movie.getFormattedTitle().toString() + ' - ';
+        console.log(otherProps);
+        for (const key in info) {
+            if (key !== 'title') {
+                text = text + `${key} : ${info[key]}`;
+            }
+        }
+        movieEl.textContent = text;
         movieList.append(movieEl);
     });
 };
@@ -42,12 +58,21 @@ const addMovieHandler = () => {
 
     const newMovie = {
         info: { title, [extraName]: extraValue },
-        id: Math.random(),
+        id: Math.random().toString(),
+        getFormattedTitle: function () {
+            return this.info.title.toUpperCase();
+        },
     };
 
     movies.push(newMovie);
     renderMovies();
 };
 
+const searchMovieHandler = () => {
+    const filterTerm = document.getElementById('filter-title').value;
+    renderMovies(filterTerm);
+};
+
 //Add event listeners to buttons
 addMovieBtn.addEventListener('click', addMovieHandler);
+searchBtn.addEventListener('click', searchMovieHandler);
